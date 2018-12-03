@@ -29,6 +29,7 @@ DecoderError CDecoder::InitDecoder(int devId, int width, int height, VideoCodec 
 	{
 		m_nvDevoder = new NvDecoder(m_cuContext, width, height, false, GetNvCodecID(codec));
 	}
+	return DECODER_OK;
 }
 
 cudaVideoCodec CDecoder::GetNvCodecID(VideoCodec codec)

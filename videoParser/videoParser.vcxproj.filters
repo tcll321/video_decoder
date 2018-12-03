@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ffmpeg_dec">
+      <UniqueIdentifier>{4caf31b0-8fa9-4f63-a9bc-6b2c01041097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ffmpeg_dec\x86">
+      <UniqueIdentifier>{fb232006-f680-498a-bd2b-b5428ae75602}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\defines.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\videoParser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AVCodecParser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\h264.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\pixfmt.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\get_bits.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\common.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\bswap.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\config.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\intreadwrite.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\x86\bswap.h">
+      <Filter>ffmpeg_dec\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\attributes.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\avassert.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\mem.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\mem_internal.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\error.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\dynarray.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\internal.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\utils.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\macros.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\avstring.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\buffer.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\stdatomic.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\golomb.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\x86\intmath.h">
+      <Filter>ffmpeg_dec\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\intmath.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dec\mathops.h">
+      <Filter>ffmpeg_dec</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="source\videoParser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\mem.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\error.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\avstring.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\golomb.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\pixdesc.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\mathtables.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dec\buffer.c">
+      <Filter>ffmpeg_dec</Filter>
+    </ClCompile>
+    <ClCompile Include="source\h264_parser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
