@@ -118,7 +118,17 @@ void Ctest_demoDlg::OnBnClickedBtnSelectfile()
 void Ctest_demoDlg::OnBnClickedBtnStart()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CPlayer* pPlay = new CLocalPlayer("d:\\test.h264", 0);
+	CString strUrl;
+	m_edtUrl.GetWindowTextA(strUrl);
+	CPlayer* pPlay = NULL;
+	if (strUrl.Find("rtsp://") >= 0)
+	{
+		pPlay = new CRealPlayer(strUrl, 0);
+	}
+	else
+	{
+		pPlay = new CLocalPlayer(strUrl, 0);
+	}
 	pPlay->Play();
 	pPlay->CreatePlayer(0);
 }

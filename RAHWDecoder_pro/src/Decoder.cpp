@@ -14,6 +14,7 @@ CDecoder::~CDecoder()
 {
 	if (m_nvDevoder)
 		delete m_nvDevoder;
+	cuCtxDestroy(m_cuContext);
 }
 
 DecoderError CDecoder::InitDecoder(int devId, int width, int height, VideoCodec codec)
@@ -27,7 +28,7 @@ DecoderError CDecoder::InitDecoder(int devId, int width, int height, VideoCodec 
 	}
 	if (m_nvDevoder == NULL)
 	{
-		m_nvDevoder = new NvDecoder(m_cuContext, width, height, false, GetNvCodecID(codec));
+		m_nvDevoder = new NvDecoder(m_cuContext, width, height, true, GetNvCodecID(codec));
 	}
 	return DECODER_OK;
 }
@@ -53,6 +54,7 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 	if (m_nvDevoder == NULL)
 		return DECODER_ERR_NULL_PTR;
 
+	cuCtxPushCurrent(m_cuContext);
 	if (m_nvDevoder->Decode(data, datalen, ppFrame, framCount))
 	{
 		if (*framCount != 0)
@@ -61,6 +63,25 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 		}
 		return DECODER_OK;
 	}
+	cuCtxPopCurrent(&m_cuContext);
+	return DECODER_ERR_DECOD_FAILED;
+}
 
+DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned char** ppFrame, int* frameSize, int* width, int* height, int* framCount)
+{
+	if (m_nvDevoder == NULL)
+		return DECODER_ERR_NULL_PTR;
+	cuCtxPushCurrent(m_cuContext);
+	if (m_nvDevoder->Decode(data, datalen, ppFrame, framCount))
+	{
+		if (*framCount != 0)
+		{
+			*frameSize = m_nvDevoder->GetFrameSize();
+			*width = m_nvDevoder->GetWidth();
+			*height = m_nvDevoder->GetHeight();
+		}
+		return DECODER_OK;
+	}
+	cuCtxPopCurrent(NULL);
 	return DECODER_ERR_DECOD_FAILED;
 }

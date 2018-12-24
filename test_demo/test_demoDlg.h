@@ -6,6 +6,7 @@
 #include "afxwin.h"
 #include <vector>
 #include "LocalPlayer.h"
+#include "RealPlayer.h"
 
 // Ctest_demoDlg ¶Ô»°¿ò
 class Ctest_demoDlg : public CDialogEx

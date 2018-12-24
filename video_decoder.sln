@@ -12,8 +12,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rtspAPI", "rtspAPI\rtspAPI.vcxproj", "{ADF979AA-150F-45CC-811A-4352AFDA7155}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_demo", "test_demo\test_demo.vcxproj", "{67152345-3E9B-43F9-8390-6721C91436C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F9907B58-39DE-4CBE-B536-27E1508995FB} = {F9907B58-39DE-4CBE-B536-27E1508995FB}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "videoParser", "videoParser\videoParser.vcxproj", "{56AC56BE-0728-4BF7-AF9D-274114210557}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cudaUtils", "cudaUtils\cudaUtils.vcxproj", "{F9907B58-39DE-4CBE-B536-27E1508995FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +76,14 @@ Global
 		{56AC56BE-0728-4BF7-AF9D-274114210557}.Release|x64.Build.0 = Release|x64
 		{56AC56BE-0728-4BF7-AF9D-274114210557}.Release|x86.ActiveCfg = Release|Win32
 		{56AC56BE-0728-4BF7-AF9D-274114210557}.Release|x86.Build.0 = Release|Win32
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Debug|x64.ActiveCfg = Debug|x64
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Debug|x64.Build.0 = Debug|x64
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Debug|x86.ActiveCfg = Debug|Win32
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Debug|x86.Build.0 = Debug|Win32
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Release|x64.ActiveCfg = Release|x64
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Release|x64.Build.0 = Release|x64
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Release|x86.ActiveCfg = Release|Win32
+		{F9907B58-39DE-4CBE-B536-27E1508995FB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

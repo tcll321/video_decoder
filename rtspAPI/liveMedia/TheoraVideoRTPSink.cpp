@@ -95,7 +95,7 @@ TheoraVideoRTPSink::TheoraVideoRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
   
   unsigned fmtpSDPLineMaxSize = 200 + strlen(base64PackedHeaders);// 200 => more than enough space
   fFmtpSDPLine = new char[fmtpSDPLineMaxSize];
-  sprintf(fFmtpSDPLine, "a=fmtp:%d sampling=%s;width=%u;height=%u;delivery-method=out_band/rtsp;configuration=%s\r\n", rtpPayloadType(), pf_to_str[pf], width, height, base64PackedHeaders);
+  sprintf_s(fFmtpSDPLine, sizeof(fFmtpSDPLine), "a=fmtp:%d sampling=%s;width=%u;height=%u;delivery-method=out_band/rtsp;configuration=%s\r\n", rtpPayloadType(), pf_to_str[pf], width, height, base64PackedHeaders);
   delete[] base64PackedHeaders;
 }
 

@@ -11,6 +11,7 @@ public:
 
 	DecoderError InitDecoder(int devId, int width, int height, VideoCodec codec);
 	DecoderError Decod(const unsigned char* data, int datalen, unsigned char** ppFrame, int* frameSize, int* framCount);
+	DecoderError Decod(const unsigned char* data, int datalen, unsigned char** ppFrame, int* frameSize, int* width, int* height, int* framCount);
 
 protected:
 	cudaVideoCodec GetNvCodecID(VideoCodec codec);

@@ -147,7 +147,7 @@ WAVAudioFileSource::WAVAudioFileSource(UsageEnvironment& env, FILE* fid)
     fNumChannels = (unsigned char)numChannels;
     if (fNumChannels < 1 || fNumChannels > 2) { // invalid # channels
       char errMsg[100];
-      sprintf(errMsg, "Bad # channels: %d", fNumChannels);
+      sprintf_s(errMsg, sizeof(errMsg), "Bad # channels: %d", fNumChannels);
       env.setResultMsg(errMsg);
       break;
     }

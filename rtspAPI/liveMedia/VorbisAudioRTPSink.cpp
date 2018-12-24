@@ -104,7 +104,7 @@ VorbisAudioRTPSink::VorbisAudioRTPSink(UsageEnvironment& env, Groupsock* RTPgs,
   
   unsigned fmtpSDPLineMaxSize = 50 + strlen(base64PackedHeaders); // 50 => more than enough space
   fFmtpSDPLine = new char[fmtpSDPLineMaxSize];
-  sprintf(fFmtpSDPLine, "a=fmtp:%d configuration=%s\r\n", rtpPayloadType(), base64PackedHeaders);
+  sprintf_s(fFmtpSDPLine, sizeof(fFmtpSDPLine), "a=fmtp:%d configuration=%s\r\n", rtpPayloadType(), base64PackedHeaders);
   delete[] base64PackedHeaders;
 }
 

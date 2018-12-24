@@ -24,4 +24,4 @@ RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_DeleteDecoder(CHANNEL_ID id);
 
 RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_InitDecoder(CHANNEL_ID id, int devId, int width, int height, VideoCodec codec);
 
-RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_Decod(CHANNEL_ID id, const unsigned char* data, int datalen,	unsigned char** ppFrame, int* frameSize, int* framCount);
+RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_Decod(CHANNEL_ID id, const unsigned char* data, int datalen,	unsigned char** ppFrame, int* frameSize, int* width, int* height, int* framCount);

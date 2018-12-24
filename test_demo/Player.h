@@ -29,6 +29,7 @@ public:
 
 private:
 	void SaveYUVToFile(const unsigned char* data, int len);
+	void SaveRgbToFile(const unsigned char* data, int len, int width, int height);
 
 protected:
 	std::string m_strUrl;
@@ -42,5 +43,6 @@ protected:
 	CHANNEL_ID	m_decoderID;
 
 	FILE *m_pfYuv;
+	FILE *m_pfRgb;
 };
 

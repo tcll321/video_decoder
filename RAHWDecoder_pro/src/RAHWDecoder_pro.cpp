@@ -78,11 +78,12 @@ RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_InitDecoder(CHANNEL_ID id, in
 	return err;
 }
 
-RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_Decod(CHANNEL_ID id, const unsigned char* data, int datalen, unsigned char** ppFrame, int* frameSize, int* framCount)
+RAHWDECODER_PRO_API DecoderError DECODER_METHOD HW_Decod(CHANNEL_ID id, const unsigned char* data, int datalen, unsigned char** ppFrame, int* frameSize, int* width, int* height, int* framCount)
 {
 	DecoderError err = DECODER_OK;
 	ChannelIDAutoBusy autoBusy(s_channelIDManager, id);
 	DECODER_GETOBJECT(pDecoder, CDecoder, id, param);
-	err = pDecoder->Decod(data, datalen, ppFrame, frameSize, framCount);
+// 	err = pDecoder->Decod(data, datalen, ppFrame, frameSize, framCount);
+	err = pDecoder->Decod(data, datalen, ppFrame, frameSize, width, height, framCount);
 	return err;
 }

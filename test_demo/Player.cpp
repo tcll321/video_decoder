@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Player.h"
-
+#include "ColorUtilsInterface.h"
 
 CPlayer::CPlayer(const char* url, HWND hwnd)
 	:m_strUrl(url)
@@ -9,6 +9,7 @@ CPlayer::CPlayer(const char* url, HWND hwnd)
 	, m_hPlayThread(NULL)
 	, m_decoderID(NULL)
 	, m_pfYuv(NULL)
+	, m_pfRgb(NULL)
 {
 }
 
@@ -22,6 +23,17 @@ CPlayer::~CPlayer()
 		m_deqDataPacket.pop_front();
 		delete[] pdata->data;
 		delete pdata;
+	}
+
+	if (m_pfYuv)
+	{
+		fclose(m_pfYuv);
+		m_pfYuv = NULL;
+	}
+	if (m_pfRgb)
+	{
+		fclose(m_pfRgb);
+		m_pfRgb = NULL;
 	}
 }
 
@@ -87,14 +99,15 @@ void CPlayer::PlayWorker()
 		{
 			unsigned char* pFrame = NULL;
 			int count;
-			int frameSize;
-			HW_Decod(m_decoderID, pDataPacket->data, pDataPacket->dataLen, &pFrame, &frameSize, &count);
-			delete pDataPacket->data;
-			delete pDataPacket;
-// 			for (int i=0; i<count; i++)
-// 			{
+			int frameSize, width, height;
+			HW_Decod(m_decoderID, pDataPacket->data, pDataPacket->dataLen, &pFrame, &frameSize, &width, &height, &count);
+// 			delete pDataPacket->data;
+// 			delete pDataPacket;
+			for (int i=0; i<count; i++)
+			{
 // 				SaveYUVToFile(pFrame, frameSize);
-// 			}
+				SaveRgbToFile(pFrame, frameSize, width, height);
+			}
 		}
 		else
 			Sleep(1);
@@ -109,10 +122,39 @@ void CPlayer::SaveYUVToFile(const unsigned char * data, int len)
 	}
 	if (m_pfYuv == NULL)
 	{
-		m_pfYuv = fopen("d:\\out.yuv", "ab");
+		m_pfYuv = fopen("d:\\out.yuv", "wb");
 	}
 	if (m_pfYuv)
 	{
-		fwrite(data, 1, len, m_pfYuv);
+		std::shared_ptr<ColorUtilsInterface> p = ColorUtilsInterface::Create(0);
+		unsigned char* dstMemData = new unsigned char[len];
+		p->MemcpyDevToHost(dstMemData, len, (void*)data, len);
+		fwrite(dstMemData, 1, len, m_pfYuv);
+	}
+}
+
+void CPlayer::SaveRgbToFile(const unsigned char* data, int len, int width, int height)
+{
+	if (len <= 0)
+	{
+		return;
+	}
+	if (m_pfRgb == NULL)
+	{
+		m_pfRgb = fopen("d:\\newDecod.rgb", "wb");
+	}
+	if (m_pfRgb)
+	{
+		std::shared_ptr<ColorUtilsInterface> p = ColorUtilsInterface::Create(0);
+		void* dstRgbData = NULL;
+		unsigned char* dstMemData = new unsigned char[width*height*4];
+		unsigned char* dstFace = new unsigned char[width * height * 4];
+		p->cudaNv12ToBgra32((uint8_t*)data, width, (uint8_t**)&dstRgbData, width, width, height);
+		p->MemcpyDevToHost(dstMemData, width*height * 4, dstRgbData, width*height * 4);
+		p->MattingImage(dstRgbData, width, height, dstFace, 800, 500, 600, 300);
+		p->FreeGpuMem(dstRgbData);
+// 		fwrite(dstMemData, 1, width*height * 4, m_pfRgb);
+		fwrite(dstFace, 1, width*height * 4, m_pfRgb);
+		delete dstMemData;
 	}
 }

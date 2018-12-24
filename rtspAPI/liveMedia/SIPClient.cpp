@@ -46,7 +46,7 @@ void SIPClient::setUserAgentString(char const* userAgentName) {
   unsigned const headerSize = strlen(formatStr) + strlen(userAgentName);
   delete[] fUserAgentHeaderStr;
   fUserAgentHeaderStr = new char[headerSize];
-  sprintf(fUserAgentHeaderStr, formatStr, userAgentName);
+  sprintf_s(fUserAgentHeaderStr, sizeof(fUserAgentHeaderStr), formatStr, userAgentName);
   fUserAgentHeaderStrLen = strlen(fUserAgentHeaderStr);
 }
 
@@ -117,7 +117,7 @@ SIPClient::SIPClient(UsageEnvironment& env,
   unsigned userAgentNameSize
     = fApplicationNameSize + strlen(libPrefix) + strlen(libName) + strlen(libVersionStr) + strlen(libSuffix) + 1;
   char* userAgentName = new char[userAgentNameSize];
-  sprintf(userAgentName, "%s%s%s%s%s",
+  sprintf_s(userAgentName, userAgentNameSize, "%s%s%s%s%s",
 	  applicationName, libPrefix, libName, libVersionStr, libSuffix);
   setUserAgentString(userAgentName);
   delete[] userAgentName;
@@ -215,7 +215,7 @@ char* SIPClient::invite1(Authenticator* authenticator) {
       unsigned rtpmapFmtSize = strlen(rtpmapFmt)
 	+ 3 /* max char len */ + fMIMESubtypeSize;
       rtpmapLine = new char[rtpmapFmtSize];
-      sprintf(rtpmapLine, rtpmapFmt,
+      sprintf_s(rtpmapLine, rtpmapFmtSize, rtpmapFmt,
 	      fDesiredAudioRTPPayloadFormat, fMIMESubtype);
       rtpmapLineSize = strlen(rtpmapLine);
     } else {
@@ -239,7 +239,7 @@ char* SIPClient::invite1(Authenticator* authenticator) {
       + rtpmapLineSize;
     delete[] fInviteSDPDescription;
     fInviteSDPDescription = new char[inviteSDPFmtSize];
-    sprintf(fInviteSDPDescription, inviteSDPFmt,
+    sprintf_s(fInviteSDPDescription, inviteSDPFmtSize, inviteSDPFmt,
 	    fCallId, fCSeq, fOurAddressStr,
 	    fApplicationName,
 	    fOurAddressStr,
@@ -275,7 +275,7 @@ char* SIPClient::invite1(Authenticator* authenticator) {
       + 20
       + inviteSDPSize;
     delete[] fInviteCmd; fInviteCmd = new char[inviteCmdSize];
-    sprintf(fInviteCmd, cmdFmt,
+    sprintf_s(fInviteCmd, inviteCmdSize, cmdFmt,
 	    fURL,
 	    fUserName, fUserName, fOurAddressStr, fFromTag,
 	    fOurAddressStr, fOurPortNum,
@@ -501,11 +501,11 @@ unsigned SIPClient::getResponseCode() {
           Boolean foundAuthenticateHeader = False;
 	  if (
 	      // Asterisk #####
-	      sscanf(lineStart, "Proxy-Authenticate: Digest realm=\"%[^\"]\", nonce=\"%[^\"]\"",
-		     realm, nonce) == 2 ||
+	      sscanf_s(lineStart, "Proxy-Authenticate: Digest realm=\"%[^\"]\", nonce=\"%[^\"]\"",
+		     realm, strlen(realm), nonce, strlen(nonce)) == 2 ||
 	      // Cisco ATA #####
-	      sscanf(lineStart, "Proxy-Authenticate: Digest algorithm=MD5,domain=\"%*[^\"]\",nonce=\"%[^\"]\", realm=\"%[^\"]\"",
-		     nonce, realm) == 2) {
+	      sscanf_s(lineStart, "Proxy-Authenticate: Digest algorithm=MD5,domain=\"%*[^\"]\",nonce=\"%[^\"]\", realm=\"%[^\"]\"",
+		     nonce, strlen(nonce), realm, strlen(realm)) == 2) {
             fWorkingAuthenticator->setRealmAndNonce(realm, nonce);
             foundAuthenticateHeader = True;
           }
@@ -532,14 +532,14 @@ unsigned SIPClient::getResponseCode() {
       if (lineStart[0] == '\0') break; // this is a blank line
 
       char* toTagStr = strDupSize(lineStart);
-      if (sscanf(lineStart, "To:%*[^;]; tag=%s", toTagStr) == 1) {
+      if (sscanf_s(lineStart, "To:%*[^;]; tag=%s", toTagStr, strlen(toTagStr)) == 1) {
 	delete[] (char*)fToTagStr; fToTagStr = strDup(toTagStr);
 	fToTagStrSize = strlen(fToTagStr);
       }
       delete[] toTagStr;
 
-      if (sscanf(lineStart, "Content-Length: %d", &contentLength) == 1
-          || sscanf(lineStart, "Content-length: %d", &contentLength) == 1) {
+      if (sscanf_s(lineStart, "Content-Length: %d", &contentLength) == 1
+          || sscanf_s(lineStart, "Content-length: %d", &contentLength) == 1) {
         if (contentLength < 0) {
           envir().setResultMsg("Bad \"Content-Length:\" header: \"",
                                lineStart, "\"");
@@ -661,7 +661,7 @@ Boolean SIPClient::sendACK() {
       + 20 + fOurAddressStrSize
       + 20;
     cmd = new char[cmdSize];
-    sprintf(cmd, cmdFmt,
+    sprintf_s(cmd, cmdSize, cmdFmt,
 	    fURL,
 	    fUserName, fUserName, fOurAddressStr, fFromTag,
 	    fOurAddressStr, fOurPortNum,
@@ -703,7 +703,7 @@ Boolean SIPClient::sendBYE() {
       + 20 + fOurAddressStrSize
       + 20;
     cmd = new char[cmdSize];
-    sprintf(cmd, cmdFmt,
+    sprintf_s(cmd, cmdSize, cmdFmt,
 	    fURL,
 	    fUserName, fUserName, fOurAddressStr, fFromTag,
 	    fOurAddressStr, fOurPortNum,
@@ -803,7 +803,7 @@ Boolean SIPClient::parseSIPURL(UsageEnvironment& env, char const* url,
     char nextChar = *from;
     if (nextChar == ':') {
       int portNumInt;
-      if (sscanf(++from, "%d", &portNumInt) != 1) {
+      if (sscanf_s(++from, "%d", &portNumInt) != 1) {
 	env.setResultMsg("No port number follows ':'");
 	break;
       }
@@ -874,7 +874,7 @@ SIPClient::createAuthenticatorString(Authenticator const* authenticator,
       + strlen(authenticator->username()) + strlen(authenticator->realm())
       + strlen(authenticator->nonce()) + strlen(url) + strlen(response);
     char* authenticatorStr = new char[authBufSize];
-    sprintf(authenticatorStr, authFmt,
+    sprintf_s(authenticatorStr, authBufSize, authFmt,
 	    authenticator->username(), authenticator->realm(),
 	    authenticator->nonce(), response, url);
     authenticator->reclaimDigestResponse(response);
@@ -949,7 +949,7 @@ unsigned SIPClient::getResponse(char*& responseBuffer,
 
 Boolean SIPClient::parseResponseCode(char const* line,
 				      unsigned& responseCode) {
-  if (sscanf(line, "%*s%u", &responseCode) != 1) {
+  if (sscanf_s(line, "%*s%u", &responseCode) != 1) {
     envir().setResultMsg("no response code in line: \"", line, "\"");
     return False;
   }

@@ -57,6 +57,9 @@
     <ClInclude Include="..\pub\types.h">
       <Filter>pub</Filter>
     </ClInclude>
+    <ClInclude Include="RealPlayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_demo.cpp">
@@ -72,6 +75,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LocalPlayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RealPlayer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
