@@ -10,6 +10,9 @@ public:
 	CColorUtils(int deviceID);
 	~CColorUtils();
 
+	int cudaNv12ToBgr24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix = 0);
+	int cudaNv12ToRgb24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpRgb, int nRgbPitch, int nWidth, int nHeight, int iMatrix = 0);
+
 	int cudaNv12ToBgra32(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix = 0);
 	int cudaNv12ToBgra64(uint8_t *dpNv12, int nNv12Pitch, uint8_t *dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix = 0);
 

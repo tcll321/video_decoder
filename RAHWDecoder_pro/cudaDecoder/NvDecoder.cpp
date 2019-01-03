@@ -616,7 +616,7 @@ bool NvDecoder::Decode(const uint8_t *pData, int nSize, uint8_t **pppFrame, int 
     {
         *pnFrameReturned = m_nDecodedFrame;
     }
-    return true;
+	return true;
 }
 
 bool NvDecoder::DecodeLockFrame(const uint8_t *pData, int nSize, uint8_t **pppFrame, int *pnFrameReturned, uint32_t flags, int64_t **ppTimestamp, int64_t timestamp, CUstream stream)

@@ -9,7 +9,7 @@ CColorUtils::CColorUtils(int deviceID)
 	:m_deviceID(deviceID)
 	, m_cuContext(NULL)
 {
-	cuCtxCreate(&m_cuContext, CU_CTX_SCHED_BLOCKING_SYNC, m_deviceID);
+// 	cuCtxCreate(&m_cuContext, CU_CTX_SCHED_BLOCKING_SYNC, m_deviceID);
 }
 
 
@@ -17,9 +17,57 @@ CColorUtils::~CColorUtils()
 {
 	if (m_cuContext)
 	{
-		cuCtxDestroy(m_cuContext);
+// 		cuCtxDestroy(m_cuContext);
 		m_cuContext = NULL;
 	}
+}
+
+int CColorUtils::cudaNv12ToBgr24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix)
+{
+	cudaError_t cudaStatus;
+	CUdeviceptr dpFrame = 0;
+	cudaStatus = cudaSetDevice(m_deviceID);
+	if (cudaStatus != cudaSuccess)
+	{
+		fprintf(stderr, "cudaGetDevice failed: %s\n", cudaGetErrorString(cudaStatus));
+		return -1;
+	}
+	CUresult ret = CUDA_SUCCESS;
+
+	// 	if (!ck(cuMemAlloc(&dpFrame, nWidth * nHeight * 4)))
+	// 		return -1;
+	unsigned char* hostChar = NULL;
+// 	cuCtxPushCurrent(m_cuContext);
+	ret = cuMemAlloc(&dpFrame, nWidth * nHeight * 3);
+	Nv12ToBgr32(dpNv12, nWidth, (uint8_t*)dpFrame, 3 * nWidth, nWidth, nHeight);
+// 	cuCtxPopCurrent(NULL);
+	cudaDeviceSynchronize();
+
+	*dpBgra = (uint8_t*)dpFrame;
+	return 0;
+}
+
+int CColorUtils::cudaNv12ToRgb24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpRgb, int nRgbPitch, int nWidth, int nHeight, int iMatrix)
+{
+	cudaError_t cudaStatus;
+	CUdeviceptr dpFrame = 0;
+	cudaStatus = cudaSetDevice(m_deviceID);
+	if (cudaStatus != cudaSuccess)
+	{
+		fprintf(stderr, "cudaGetDevice failed: %s\n", cudaGetErrorString(cudaStatus));
+		return -1;
+	}
+	CUresult ret = CUDA_SUCCESS;
+
+	// 	if (!ck(cuMemAlloc(&dpFrame, nWidth * nHeight * 4)))
+	// 		return -1;
+	unsigned char* hostChar = NULL;
+// 	cuCtxPushCurrent(m_cuContext);
+	ret = cuMemAlloc(&dpFrame, nWidth * nHeight * 3);
+	Nv12ToBgr32(dpNv12, nWidth, (uint8_t*)dpFrame, 3 * nWidth, nWidth, nHeight);
+// 	cuCtxPopCurrent(NULL);
+	*dpRgb = (uint8_t*)dpFrame;
+	return 0;
 }
 
 int CColorUtils::cudaNv12ToBgra32(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix)
@@ -37,10 +85,10 @@ int CColorUtils::cudaNv12ToBgra32(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpB
 // 	if (!ck(cuMemAlloc(&dpFrame, nWidth * nHeight * 4)))
 // 		return -1;
 	unsigned char* hostChar = NULL;
-	cuCtxPushCurrent(m_cuContext);
+// 	cuCtxPushCurrent(m_cuContext);
 	ret = cuMemAlloc(&dpFrame, nWidth * nHeight * 4);
 	Nv12ToBgra32(dpNv12, nWidth, (uint8_t*)dpFrame, 4 * nWidth, nWidth, nHeight);
-	cuCtxPopCurrent(NULL);
+// 	cuCtxPopCurrent(NULL);
 	*dpBgra = (uint8_t*)dpFrame;
 	return 0;
 }
@@ -118,48 +166,52 @@ int CColorUtils::ScaleYUV420(unsigned char *dpDstY, unsigned char* dpDstU, unsig
 
 int CColorUtils::MattingImage(void* srcImage, int srcWidth, int srcHeight, void* dstImage, int x, int y, int dstWidth, int dstHeight)
 {
+	if ((x+dstWidth)>srcWidth || (y+dstHeight)>srcHeight)
+	{
+		return -1;
+	}
 	cudaError_t cudaStatus;
 	unsigned char* pDstImage = NULL;
 	int	nDevId;
-	int dstImageSize = dstWidth*dstHeight * 4;
+	int dstImageSize = dstWidth*dstHeight * 3;
 	cudaStatus = cudaSetDevice(m_deviceID);
 	if (cudaStatus != cudaSuccess)
 	{
 		fprintf(stderr, "cudaGetDevice failed: %s\n", cudaGetErrorString(cudaStatus));
 		return -1;
 	}
-	cuCtxPushCurrent(m_cuContext);
+// 	cuCtxPushCurrent(m_cuContext);
 
 	cudaStatus = cudaMalloc((void**)&pDstImage, dstImageSize);
 	if (cudaStatus != cudaSuccess)
 	{
 		cudaFree(pDstImage);
 		fprintf(stderr, "cudaMalloc failed: %s\n", cudaGetErrorString(cudaStatus));
-		return -1;
+		return -2;
 	}
 	int ret = MattingPicture(srcImage, srcWidth, srcHeight, pDstImage, x, y, dstWidth, dstHeight);
 	if (ret != 0)
 	{
 		cudaFree(pDstImage);
 		fprintf(stderr, "kernel_MattingPicture failed: %s\n", cudaGetErrorString(cudaStatus));
-		return -1;
+		return -3;
 	}
-	cudaStatus = cudaMemcpy(dstImage, pDstImage, dstWidth*dstHeight * 4, cudaMemcpyDeviceToHost);
+	cudaStatus = cudaMemcpy(dstImage, pDstImage, dstWidth*dstHeight * 3, cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess)
 	{
 		cudaFree(pDstImage);
 		fprintf(stderr, "memcpy device to host failed: %s\n", cudaGetErrorString(cudaStatus));
-		return -1;
+		return -4;
 	}
 	cudaStatus = cudaDeviceSynchronize();
 	if (cudaStatus != cudaSuccess)
 	{
 		cudaFree(pDstImage);
-		fprintf(stderr, "memcpy host to device failed: %s\n", cudaGetErrorString(cudaStatus));
-		return -1;
+		fprintf(stderr, "cudaDeviceSynchronize failed: %s\n", cudaGetErrorString(cudaStatus));
+		return -5;
 	}
 	cudaFree(pDstImage);
-	cuCtxPopCurrent(NULL);
+// 	cuCtxPopCurrent(NULL);
 	return 0;
 }
 
@@ -204,7 +256,7 @@ int CColorUtils::MemcpyDevToHost(void * dstImage, int dstLen, void * srcImage, i
 // 		fprintf(stderr, "cudaGetDevice failed: %s\n", cudaGetErrorString(cudaStatus));
 // 		return -1;
 // 	}
-	cuCtxPushCurrent(m_cuContext);
+// 	cuCtxPushCurrent(m_cuContext);
 	cudaStatus = cudaMemcpy(dstImage, srcImage, dstLen, cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess)
 	{
@@ -217,7 +269,7 @@ int CColorUtils::MemcpyDevToHost(void * dstImage, int dstLen, void * srcImage, i
 		fprintf(stderr, "memcpy host to device failed: %s\n", cudaGetErrorString(cudaStatus));
 		return -1;
 	}
-	cuCtxPopCurrent(NULL);
+// 	cuCtxPopCurrent(NULL);
 	return 0;
 }
 

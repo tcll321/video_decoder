@@ -14,13 +14,14 @@ CDecoder::~CDecoder()
 {
 	if (m_nvDevoder)
 		delete m_nvDevoder;
-	cuCtxDestroy(m_cuContext);
+	if (m_cuContext)
+		cuCtxDestroy(m_cuContext);
 }
 
 DecoderError CDecoder::InitDecoder(int devId, int width, int height, VideoCodec codec)
 {
 	CUresult res = CUDA_SUCCESS;
-	res = cuCtxCreate(&m_cuContext, 0, devId);
+	res = cuCtxCreate(&m_cuContext, CU_CTX_BLOCKING_SYNC, devId);
 	if (res != CUDA_SUCCESS)
 	{
 		printf("cuCtxCreate failed!! errno=%d\n", res);
@@ -54,7 +55,6 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 	if (m_nvDevoder == NULL)
 		return DECODER_ERR_NULL_PTR;
 
-	cuCtxPushCurrent(m_cuContext);
 	if (m_nvDevoder->Decode(data, datalen, ppFrame, framCount))
 	{
 		if (*framCount != 0)
@@ -63,7 +63,6 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 		}
 		return DECODER_OK;
 	}
-	cuCtxPopCurrent(&m_cuContext);
 	return DECODER_ERR_DECOD_FAILED;
 }
 
@@ -71,7 +70,6 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 {
 	if (m_nvDevoder == NULL)
 		return DECODER_ERR_NULL_PTR;
-	cuCtxPushCurrent(m_cuContext);
 	if (m_nvDevoder->Decode(data, datalen, ppFrame, framCount))
 	{
 		if (*framCount != 0)
@@ -82,6 +80,5 @@ DecoderError CDecoder::Decod(const unsigned char* data, int datalen, unsigned ch
 		}
 		return DECODER_OK;
 	}
-	cuCtxPopCurrent(NULL);
 	return DECODER_ERR_DECOD_FAILED;
 }

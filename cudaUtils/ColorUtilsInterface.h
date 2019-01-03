@@ -12,6 +12,11 @@ public:
 	ColorUtilsInterface(void);
 	static std::shared_ptr<ColorUtilsInterface> Create(int deviceID);
 
+	// dpBgr GPU显存地址  需要调用FreeGpuMem释放显存
+	virtual int cudaNv12ToBgr24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgr, int nBgrPitch, int nWidth, int nHeight, int iMatrix = 0) = 0;
+	// dpRgb GPU显存地址  需要调用FreeGpuMem释放显存
+	virtual int cudaNv12ToRgb24(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpRgb, int nRgbPitch, int nWidth, int nHeight, int iMatrix = 0) = 0;
+
 	// dpBgra GPU显存地址  需要调用FreeGpuMem释放显存
 	virtual int cudaNv12ToBgra32(uint8_t *dpNv12, int nNv12Pitch, uint8_t **dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix = 0) = 0;
 

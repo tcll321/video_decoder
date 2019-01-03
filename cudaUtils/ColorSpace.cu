@@ -18,6 +18,19 @@ typedef enum ColorSpaceStandard {
     ColorSpaceStandard_BT2020 = 4
 } ColorSpaceStandard;
 
+typedef struct uint24_t
+{
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+}_uint24_t;
+
+typedef struct str_uint24_t
+{
+	uint24_t a;
+	uint24_t b;
+}_str_uint24_t;
+
 __constant__ float matYuv2Rgb[3][3];
 __constant__ float matRgb2Yuv[3][3];
 
@@ -83,9 +96,9 @@ __device__ inline Rgb YuvToRgbForPixel(YuvUnit y, YuvUnit u, YuvUnit v) {
     float fy = (int)y - low, fu = (int)u - mid, fv = (int)v - mid;
     const float maxf = (1 << sizeof(YuvUnit) * 8) - 1.0f;
     YuvUnit 
-        r = (YuvUnit)Clamp(matYuv2Rgb[0][0] * fy + matYuv2Rgb[0][1] * fu + matYuv2Rgb[0][2] * fv, 0.0f, maxf),
+        b = (YuvUnit)Clamp(matYuv2Rgb[0][0] * fy + matYuv2Rgb[0][1] * fu + matYuv2Rgb[0][2] * fv, 0.0f, maxf),
         g = (YuvUnit)Clamp(matYuv2Rgb[1][0] * fy + matYuv2Rgb[1][1] * fu + matYuv2Rgb[1][2] * fv, 0.0f, maxf),
-        b = (YuvUnit)Clamp(matYuv2Rgb[2][0] * fy + matYuv2Rgb[2][1] * fu + matYuv2Rgb[2][2] * fv, 0.0f, maxf);
+        r = (YuvUnit)Clamp(matYuv2Rgb[2][0] * fy + matYuv2Rgb[2][1] * fu + matYuv2Rgb[2][2] * fv, 0.0f, maxf);
     
     Rgb rgb{};
     const int nShift = abs((int)sizeof(YuvUnit) - (int)sizeof(rgb.c.r)) * 8;
@@ -164,6 +177,14 @@ union BGRA32 {
     } c;
 };
 
+union BGR32 {
+	uint24_t d;
+	uchar3 v;
+	struct {
+		uint8_t b, g, r;
+	} c;
+};
+
 union BGRA64 {
     uint64_t d;
     ushort4 v;
@@ -171,6 +192,20 @@ union BGRA64 {
         uint16_t b, g, r, a;
     } c;
 };
+
+void Nv12ToBgr32(uint8_t *dpNv12, int nNv12Pitch, uint8_t *dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix) {
+	SetMatYuv2Rgb(iMatrix);
+	YuvToRgbKernel<uchar2, BGR32, str_uint24_t>
+		<< <dim3((nWidth + 63) / 32 / 2, (nHeight + 3) / 2 / 2), dim3(32, 2) >> >
+		(dpNv12, nNv12Pitch, dpBgra, nBgraPitch, nWidth, nHeight);
+}
+
+void Nv12ToRgb32(uint8_t *dpNv12, int nNv12Pitch, uint8_t *dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix) {
+	SetMatYuv2Rgb(iMatrix);
+	YuvToRgbKernel<uchar2, BGR32, str_uint24_t>
+		<< <dim3((nWidth + 63) / 32 / 2, (nHeight + 3) / 2 / 2), dim3(32, 2) >> >
+		(dpNv12, nNv12Pitch, dpBgra, nBgraPitch, nWidth, nHeight);
+}
 
 void Nv12ToBgra32(uint8_t *dpNv12, int nNv12Pitch, uint8_t *dpBgra, int nBgraPitch, int nWidth, int nHeight, int iMatrix) {
     SetMatYuv2Rgb(iMatrix);

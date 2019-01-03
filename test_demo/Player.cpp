@@ -147,14 +147,15 @@ void CPlayer::SaveRgbToFile(const unsigned char* data, int len, int width, int h
 	{
 		std::shared_ptr<ColorUtilsInterface> p = ColorUtilsInterface::Create(0);
 		void* dstRgbData = NULL;
-		unsigned char* dstMemData = new unsigned char[width*height*4];
-		unsigned char* dstFace = new unsigned char[width * height * 4];
-		p->cudaNv12ToBgra32((uint8_t*)data, width, (uint8_t**)&dstRgbData, width, width, height);
-		p->MemcpyDevToHost(dstMemData, width*height * 4, dstRgbData, width*height * 4);
+		unsigned char* dstMemData = new unsigned char[width*height*3];
+		unsigned char* dstFace = new unsigned char[width * height * 3];
+		p->cudaNv12ToBgr24((uint8_t*)data, width, (uint8_t**)&dstRgbData, width, width, height);
+		p->MemcpyDevToHost(dstMemData, width*height * 3, dstRgbData, width*height * 3);
 		p->MattingImage(dstRgbData, width, height, dstFace, 800, 500, 600, 300);
 		p->FreeGpuMem(dstRgbData);
-// 		fwrite(dstMemData, 1, width*height * 4, m_pfRgb);
-		fwrite(dstFace, 1, width*height * 4, m_pfRgb);
+		fwrite(dstMemData, 1, width*height * 3, m_pfRgb);
+// 		fwrite(dstFace, 1, 600 * 300 * 3, m_pfRgb);
 		delete dstMemData;
+		delete dstFace;
 	}
 }
