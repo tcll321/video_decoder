@@ -7,7 +7,7 @@
 
 #include "RtspAPIExport.h"
 
-typedef bool(*RtspDataCallBack)(void* param, unsigned char* data, unsigned int dataLen, const char* mimeType, bool isKeyFrame, unsigned long pts);
+typedef bool(*RtspDataCallBack)(void* param, unsigned char* data, unsigned int dataLen, const char* mimeType, bool isKeyFrame, unsigned long long pts);
 
 
 // 成功返回句柄，失败返回0

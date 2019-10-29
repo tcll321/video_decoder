@@ -125,7 +125,7 @@ void H264MediaSink::OnAfterGettingFrame(unsigned frameSize, struct timeval prese
 			if (frameSize <= 0) break;
 			
 			BYTE start_code[4] = {0x00, 0x00, 0x00, 0x01};
-			DWORD pts = DWORD((INT64)presentationTime.tv_sec*1000 + (presentationTime.tv_usec+500)/1000);
+			INT64 pts = ((INT64)presentationTime.tv_sec*1000 + (presentationTime.tv_usec+500)/1000);
 
 			if (frameSize >= 4 && m_recvPtr[0] == 0 && m_recvPtr[1] == 0 && ((m_recvPtr[2] == 0 && m_recvPtr[3] == 1) || m_recvPtr[2] == 1))
 			{

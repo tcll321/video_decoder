@@ -8,7 +8,7 @@
 
 #define RTSP_CLIENT_VERBOSITY_LEVEL 0
 
-typedef bool(*fDataCallBack)(void* param, unsigned char* data, unsigned int dataLen, const char* mimeType, bool isKeyFrame, unsigned long pts);
+typedef bool(*fDataCallBack)(void* param, unsigned char* data, unsigned int dataLen, const char* mimeType, bool isKeyFrame, unsigned long long pts);
 
 class ARRTSPClient : public RTSPClient
 {
@@ -27,7 +27,7 @@ protected:
 public:
 	BOOL Open(const char* userName, const char* password, BOOL useTcp, fDataCallBack callback, void* cbParam, BOOL sendActiveCmd);
 	void Close();
-	BOOL OnData(BYTE* data, DWORD dataLen, const char* mimeType, BOOL isKeyFrame, DWORD pts);
+	BOOL OnData(BYTE* data, DWORD dataLen, const char* mimeType, BOOL isKeyFrame, unsigned long long pts);
 
 private:
 	static void ActiveCmdResponseHandler(RTSPClient* rtspClient, int resultCode, char* resultString);

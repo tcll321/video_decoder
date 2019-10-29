@@ -324,6 +324,7 @@
     <ClInclude Include="liveMedia\VorbisAudioMatroskaFileServerMediaSubsession.hh" />
     <ClInclude Include="liveMedia\VP8VideoMatroskaFileServerMediaSubsession.hh" />
     <ClInclude Include="pub\locker.h" />
+    <ClInclude Include="pub\Msel.h" />
     <ClInclude Include="pub\rawlock.h" />
     <ClInclude Include="include\rtspAPI.h" />
     <ClInclude Include="include\RtspAPIExport.h" />

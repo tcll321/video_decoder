@@ -606,6 +606,9 @@
     <ClInclude Include="include\targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="pub\Msel.h">
+      <Filter>pub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include=".\source\rtspAPI.cpp">
